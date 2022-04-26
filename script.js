@@ -37,11 +37,11 @@ function handleGraphDisplayDragStart(event){
 function handleGraphDisplayDragEnd(event){
     //show coord of clicked point
     graphDisplay.onmousemove = null;
-    originOffset.x += (-originMovedBy.x);
-    originOffset.y += (originMovedBy.y);
-    originMovedBy.x = 0;
-    originMovedBy.y = 0;
-    drawGraph(functionOfX, range);
+    //originOffset.x += (-originMovedBy.x);
+    //originOffset.y += (originMovedBy.y);
+    //originMovedBy.x = 0;
+    //originMovedBy.y = 0;
+    //drawGraph(functionOfX, range);
 }
 
 function handleOriginOffsetChange({ event, dragStartCoords}){
@@ -50,7 +50,11 @@ function handleOriginOffsetChange({ event, dragStartCoords}){
 
     originMovedBy.x = movedBy.x / scale;
     originMovedBy.y = movedBy.y / scale;
-    
+    //need to set new start point after each time event fires cause it always take coords of dragging start
+    originOffset.x += (-originMovedBy.x);
+    originOffset.y += (originMovedBy.y);
+    originMovedBy.x = 0;
+    originMovedBy.y = 0;
 
     drawGraph(functionOfX, range);
 }
