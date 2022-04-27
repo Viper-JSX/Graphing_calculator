@@ -2,6 +2,7 @@ const graphingCalculator = document.getElementById("graphingCalculator");
 const functionInput = document.getElementById("functionInput");
 const scaleInput = document.getElementById("scaleInput");
 const graphDisplay = document.getElementById("graphDisplay");
+graphDisplay.style.cssText = "width: 520px; height: 500px";
 
 const xAxis = document.createElement("div");
 const yAxis = document.createElement("div");
@@ -11,7 +12,8 @@ let y;
 let functionString = "x^2"; //x**2;
 let scale = 1; //The bigger the scale the tinier change of x
 //let isScaling = false;
-let step = 0.1/scale;
+let step = 1/scale;
+let lineThikness = 3 / scale;
 
 const originCoords = {x: graphDisplay.offsetWidth / 2, y: graphDisplay.offsetHeight / 2 };
 
@@ -24,7 +26,6 @@ const graphFieldRange = {
     y: {l: graphFieldInitRange.y.l / scale, h: graphFieldInitRange.y.h}
 };
 
-graphDisplay.style.cssText = "width: 520px; height: 500px";
 xAxis.id = "xAxis";
 yAxis.id = "yAxis";
 
@@ -80,7 +81,8 @@ function handleOriginOffsetChange({ event, dragStartCoords}){
 
 function handleScale(event){
     scale = parseInt(event.target.value);
-    step = 0.1 / scale;
+    step = 1 / scale > 0.01 ? 1/scale : 0.01;
+    lineThikness = 3 / scale;
     //graphFieldRange.x = {l: graphFieldInitRange.x.l / scale, h: graphFieldInitRange.x.h / scale}, //consider origin desplacement
     //graphFieldRange.y = {l: graphFieldInitRange.y.l / scale, h: graphFieldInitRange.y.h / scale}; //consider origin desplacement
     //console.log(graphFieldRange);
@@ -110,7 +112,7 @@ function handleScaleEnd(){
 
 function functionOfX(x, functionOfX = "x"){
     //turn func to x
-    return (1/x ? 1/x : null);
+    return x**2 ? x**2 : null;
 }
 
 function drawGraph(functionOfX, graphRange){
@@ -139,6 +141,24 @@ function drawGraph(functionOfX, graphRange){
 
         newPoint.style.cssText = `left: ${x}px; top: ${y}px`;
         graphDisplay.appendChild(newPoint);
+
+        //rotation and slices
+        if(i < graphRange.h){
+            console.log("less")
+            let followPoint = functionOfX(i + step);
+            let xDist = step;
+            let yDist = followPoint - 1 * functionOfX(i);
+            let length = 0;
+            let rotationAngle = Math.atan(yDist / xDist);
+    
+        
+            rotationAngle *= -1; //yDist >= 0 ? -1 * rotationAngle : -1 * rotationAngle;
+
+            length = Math.hypot(yDist, xDist);
+            newPoint.style.width = `${length * scale + 1}px`;
+            newPoint.style.transform = `rotate(${rotationAngle * 57.296}deg)`;
+        }
+        /////////////////////////////////////////////
     }
 
     xAxis.style.top =  `${(originCoords.y - originOffset.y) * scale}px`;

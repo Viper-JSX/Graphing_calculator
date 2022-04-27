@@ -47,12 +47,15 @@ body{
 .graphPoint{
     width: 3px;
     height: 3px;
-    background-color: black;
-    transform: translate(-50%, 50%);
-    border-radius: 50%;
+    background-color: #000000;
+    /*transform: rotate(300deg);*/
+    /*border-radius: 50%;*/
 }
 
 #graphDisplay > .graphPoint{
+    transform: translate(-50%, 50%);
+    /*transition: 5s;*/
+    transform-origin: left center;
     position: absolute;
 }
 
