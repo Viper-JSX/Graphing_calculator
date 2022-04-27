@@ -1,9 +1,19 @@
+const graphingCalculator = document.getElementById("graphingCalculator");
+const functionInput = document.getElementById("functionInput");
+const scaleInput = document.getElementById("scaleInput");
+const graphDisplay = document.getElementById("graphDisplay");
+
+const xAxis = document.createElement("div");
+const yAxis = document.createElement("div");
+
 let x;
 let y;
-let functionString = "x^2";//x**2;
-let scale = 3; //The bigger the scale the tinier change of x
-let isScaling = false;
+let functionString = "x^2"; //x**2;
+let scale = 1; //The bigger the scale the tinier change of x
+//let isScaling = false;
 let step = 0.1/scale;
+
+const originCoords = {x: graphDisplay.offsetWidth / 2, y: graphDisplay.offsetHeight / 2 };
 
 const originOffset = {x: 0, y: 0};
 const originMovedBy = {x: 0, y: 0};
@@ -14,10 +24,9 @@ const graphFieldRange = {
     y: {l: graphFieldInitRange.y.l / scale, h: graphFieldInitRange.y.h}
 };
 
-const graphingCalculator = document.getElementById("graphingCalculator");
-const functionInput = document.getElementById("functionInput");
-const scaleInput = document.getElementById("scaleInput");
-const graphDisplay = document.getElementById("graphDisplay");
+graphDisplay.style.cssText = "width: 520px; height: 500px";
+xAxis.id = "xAxis";
+yAxis.id = "yAxis";
 
 functionInput.onchange = handleFunctionInputChnage;
 scaleInput.onchange = handleScale;
@@ -56,13 +65,15 @@ function handleOriginOffsetChange({ event, dragStartCoords}){
     originMovedBy.y = movedBy.y / scale;
 
     //need to set new start point after each time event fires cause it always take coords of dragging start
-    originOffset.x += (-originMovedBy.x);
-    originOffset.y += (originMovedBy.y);
+    originOffset.x += (originMovedBy.x); //You can inverse the drag
+    originOffset.y += (-originMovedBy.y);  //You can inverse the drag
     originMovedBy.x = 0;
     originMovedBy.y = 0;
 
     dragStartCoords.x = dragEndCoords.x; //Setting coords so that i't a new 
     dragStartCoords.y = dragEndCoords.y; //refference point
+
+    //change background position too
 
     drawGraph(functionOfX, graphRange);
 }
@@ -99,24 +110,39 @@ function handleScaleEnd(){
 
 function functionOfX(x, functionOfX = "x"){
     //turn func to x
-    return (x**2);
+    return (1/x ? 1/x : null);
 }
 
 function drawGraph(functionOfX, graphRange){
     graphDisplay.textContent = "";
+     
+    graphDisplay.appendChild(xAxis);
+    graphDisplay.appendChild(yAxis);
+
+
     for(let i = graphRange.l; i <= graphRange.h; i += step){
         const newPoint = document.createElement("div");
         newPoint.classList.add("graphPoint");
-        x = i/*originOffset.x*/;
-        y = functionOfX(x) + originOffset.y;
+        x = i;
+        y = -1 * functionOfX(x);
+
+        if(!y || y === -Infinity || y === Infinity) continue; 
+
+        x += originCoords.x;
+        y += originCoords.y;
+
         x += originOffset.x;
-        y += originOffset.y;
+        y -= originOffset.y;
+
         x *= scale;
         y *= scale;
 
-        newPoint.style.cssText = `margin-left: ${x}px; margin-top: ${-y}px`;
+        newPoint.style.cssText = `left: ${x}px; top: ${y}px`;
         graphDisplay.appendChild(newPoint);
     }
+
+    xAxis.style.top =  `${(originCoords.y - originOffset.y) * scale}px`;
+    yAxis.style.left = `${(originCoords.x + originOffset.x) * scale}px`;
 }
 
 drawGraph(functionOfX, graphRange);
