@@ -1,7 +1,10 @@
+//---Variables---//
 const graphingCalculator = document.getElementById("graphingCalculator");
 const functionInput = document.getElementById("functionInput");
 const scaleInput = document.getElementById("scaleInput");
 const graphDisplay = document.getElementById("graphDisplay");
+const graphXMarkup = document.getElementById("graphXMarkup");
+const graphYMarkup = document.getElementById("graphYMarkup");
 graphDisplay.style.cssText = "width: 520px; height: 500px";
 
 const xAxis = document.createElement("div");
@@ -12,19 +15,28 @@ let y;
 let functionString = "x^2"; //x**2;
 let scale = 1; //The bigger the scale the tinier change of x
 //let isScaling = false;
-let step = 1/scale;
-let lineThikness = 3 / scale;
+let step = 0.1 / scale;
+let lineThikness = 1;
+let unitSizeInPixels = 20; //distance of one unit of coordinates
 
 const originCoords = {x: graphDisplay.offsetWidth / 2, y: graphDisplay.offsetHeight / 2 };
-
 const originOffset = {x: 0, y: 0};
 const originMovedBy = {x: 0, y: 0};
-const graphFieldInitRange = {x: {l: -10, h: 10}, y: {l: -2, h: 10}};
-const graphRange = {l: -10, h: 10};
+//const graphFieldRange = {x: {l: -10, h: 10}, y: {l: -10, h: 10}};
 const graphFieldRange = {
-    x: {l: graphFieldInitRange.x.l / scale, h: graphFieldInitRange.x.h},
-    y: {l: graphFieldInitRange.y.l / scale, h: graphFieldInitRange.y.h}
+    x: {l: -graphDisplay.offsetWidth / (2 * unitSizeInPixels), h: graphDisplay.offsetWidth / (2 * unitSizeInPixels)},
+    y: {l: -graphDisplay.offsetHeight / (2 * unitSizeInPixels), h: graphDisplay.offsetHeight / (2 * unitSizeInPixels)},
 };
+const graphRange = {l: -10, h: 10};
+//const graphFieldRange = {
+//    x: {l: graphFieldInitRange.x.l / scale, h: graphFieldInitRange.x.h},
+//    y: {l: graphFieldInitRange.y.l / scale, h: graphFieldInitRange.y.h}
+//};
+
+//---------------//
+
+
+//---Initial start set---//
 
 xAxis.id = "xAxis";
 yAxis.id = "yAxis";
@@ -40,6 +52,14 @@ graphDisplay.ontouchstart = handleScaleStart;
 graphDisplay.ontouchmove = handleScale;
 graphDisplay.ontouchend = handleScaleEnd;
 */
+
+drawGraph(functionOfX, graphRange);
+
+//----------------------//
+
+
+
+//---Functions---//
 
 function handleFunctionInputChnage(event){
     drawGraph(functionOfX, graphRange);
@@ -74,18 +94,19 @@ function handleOriginOffsetChange({ event, dragStartCoords}){
     dragStartCoords.x = dragEndCoords.x; //Setting coords so that i't a new 
     dragStartCoords.y = dragEndCoords.y; //refference point
 
+    //graphFieldRange = {
+    //    x: {l: (-graphDisplay.offsetWidth + originOffset.x) / (2 * unitSizeInPixels), h: (graphDisplay.offsetWidth + originOffset.x) / (2 * unitSizeInPixels)},
+    //    y: {l: (-graphDisplay.offsetHeight + originOffset.y) / (2 * unitSizeInPixels), h: (graphDisplay.offsetHeight + originOffset.y) / (2 * unitSizeInPixels)},
+    //};
     //change background position too
-
+    renderMarkup();
     drawGraph(functionOfX, graphRange);
 }
 
 function handleScale(event){
     scale = parseInt(event.target.value);
-    step = 1 / scale > 0.01 ? 1/scale : 0.01;
-    lineThikness = 3 / scale;
-    //graphFieldRange.x = {l: graphFieldInitRange.x.l / scale, h: graphFieldInitRange.x.h / scale}, //consider origin desplacement
-    //graphFieldRange.y = {l: graphFieldInitRange.y.l / scale, h: graphFieldInitRange.y.h / scale}; //consider origin desplacement
-    //console.log(graphFieldRange);
+    step = 0.1 / scale //> 0.01 ? 1/scale : 0.01;
+    renderMarkup();
     drawGraph(functionOfX, graphRange);
 }
 
@@ -112,7 +133,7 @@ function handleScaleEnd(){
 
 function functionOfX(x, functionOfX = "x"){
     //turn func to x
-    return x**2 ? x**2 : null;
+    return 1/x ? 1/x : null;//x**2 ? x**2 : null;
 }
 
 function drawGraph(functionOfX, graphRange){
@@ -130,6 +151,9 @@ function drawGraph(functionOfX, graphRange){
 
         if(!y || y === -Infinity || y === Infinity) continue; 
 
+        x *= unitSizeInPixels;
+        y *= unitSizeInPixels;
+
         x += originCoords.x;
         y += originCoords.y;
 
@@ -142,20 +166,20 @@ function drawGraph(functionOfX, graphRange){
         newPoint.style.cssText = `left: ${x}px; top: ${y}px`;
         graphDisplay.appendChild(newPoint);
 
-        //rotation and slices
+        //rotation and tangents
         if(i < graphRange.h){
-            console.log("less")
-            let followPoint = functionOfX(i + step);
-            let xDist = step;
-            let yDist = followPoint - 1 * functionOfX(i);
+            let followPoint = functionOfX(i + step) * unitSizeInPixels;
+            let xDist = step * unitSizeInPixels;
+            let yDist = followPoint - functionOfX(i) * unitSizeInPixels;
             let length = 0;
             let rotationAngle = Math.atan(yDist / xDist);
     
         
-            rotationAngle *= -1; //yDist >= 0 ? -1 * rotationAngle : -1 * rotationAngle;
+            rotationAngle *= -1;
 
             length = Math.hypot(yDist, xDist);
             newPoint.style.width = `${length * scale + 1}px`;
+            newPoint.style.height = `${lineThikness}px`;
             newPoint.style.transform = `rotate(${rotationAngle * 57.296}deg)`;
         }
         /////////////////////////////////////////////
@@ -165,4 +189,13 @@ function drawGraph(functionOfX, graphRange){
     yAxis.style.left = `${(originCoords.x + originOffset.x) * scale}px`;
 }
 
-drawGraph(functionOfX, graphRange);
+function renderMarkup(){
+    for(let i = graphFieldRange.x.l; i <= graphFieldRange.x.h; i++ ){
+        let newMarkPoint = document.createElement("span");
+        newMarkPoint.textContent = i /// unitSizeInPixels;
+        newMarkPoint.style.display = "inline-block"
+        newMarkPoint.style.marginLeft = `${10 - newMarkPoint.offsetWidth}px`;
+        graphXMarkup.appendChild(newMarkPoint);
+    }
+}
+//-------------//

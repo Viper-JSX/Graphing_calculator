@@ -29,11 +29,11 @@ body{
     position: relative;
     border: var(--standardBorder);
     overflow: hidden;
-    background-color: red;
 }
 
 #graphXMarkup{
-    width: 100%;
+    width: 80%;
+    min-width: 320px;
     height: 20px;
     background-color: blue;
 }
@@ -45,9 +45,10 @@ body{
 }
 
 .graphPoint{
-    width: 3px;
-    height: 3px;
+    width: 1px;
+    height: 1px;
     background-color: #000000;
+    background-color: blue;
     /*transform: rotate(300deg);*/
     /*border-radius: 50%;*/
 }
