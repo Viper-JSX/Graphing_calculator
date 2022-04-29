@@ -4,8 +4,10 @@ const functionInput = document.getElementById("functionInput");
 const scaleInput = document.getElementById("scaleInput");
 const graphDisplay = document.getElementById("graphDisplay");
 const graphXMarkup = document.getElementById("graphXMarkup");
+const markupXPoints = document.getElementById("markupXPoints");
 const graphYMarkup = document.getElementById("graphYMarkup");
-graphDisplay.style.cssText = "width: 520px; height: 500px";
+const markupYPoints = document.getElementById("markupYPoints");
+graphDisplay.style.cssText = "width: 520px; height: 520px";
 
 const xAxis = document.createElement("div");
 const yAxis = document.createElement("div");
@@ -53,6 +55,7 @@ graphDisplay.ontouchmove = handleScale;
 graphDisplay.ontouchend = handleScaleEnd;
 */
 
+renderMarkup();
 drawGraph(functionOfX, graphRange);
 
 //----------------------//
@@ -99,7 +102,8 @@ function handleOriginOffsetChange({ event, dragStartCoords}){
     //    y: {l: (-graphDisplay.offsetHeight + originOffset.y) / (2 * unitSizeInPixels), h: (graphDisplay.offsetHeight + originOffset.y) / (2 * unitSizeInPixels)},
     //};
     //change background position too
-    renderMarkup();
+    markupXPoints.style.marginLeft = `${originOffset.x}px`;
+    markupYPoints.style.marginTop = `${-1 * originOffset.y}px`;
     drawGraph(functionOfX, graphRange);
 }
 
@@ -190,12 +194,25 @@ function drawGraph(functionOfX, graphRange){
 }
 
 function renderMarkup(){
-    for(let i = graphFieldRange.x.l; i <= graphFieldRange.x.h; i++ ){
-        let newMarkPoint = document.createElement("span");
-        newMarkPoint.textContent = i /// unitSizeInPixels;
-        newMarkPoint.style.display = "inline-block"
-        newMarkPoint.style.marginLeft = `${10 - newMarkPoint.offsetWidth}px`;
-        graphXMarkup.appendChild(newMarkPoint);
+    markupXPoints.textContent = "";
+    for(let i = graphFieldRange.x.l * 10; i <= graphFieldRange.x.h * 10; i++ ){
+        let newMarkXPoint = document.createElement("span");
+        newMarkXPoint.textContent = i /// unitSizeInPixels;
+        newMarkXPoint.style.display = "inline-block"
+        newMarkXPoint.style.width = `${unitSizeInPixels}px`;
+
+        markupXPoints.appendChild(newMarkXPoint);
+        markupXPoints.style.marginLeft = `${originOffset.x}px`;
+    }
+
+    for(let i = graphFieldRange.y.h * 10; i >= graphFieldRange.y.l * 10; i-- ){
+        let newMarkYPoint = document.createElement("span");
+        newMarkYPoint.textContent = i /// unitSizeInPixels;
+        newMarkYPoint.style.display = "inline-block"
+        newMarkYPoint.style.height = `${unitSizeInPixels}px`;
+
+        markupYPoints.appendChild(newMarkYPoint);
     }
 }
+
 //-------------//

@@ -16,12 +16,13 @@ body{
 }
 
 #graphDisplayContainer{
-    flex-direction: column;
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 
 #graphDisplay{
-    width: 80%;
+    width: 80%;;
     height: 80%;
     min-width: 320px;
     min-height: 480px;
@@ -32,16 +33,43 @@ body{
 }
 
 #graphXMarkup{
-    width: 80%;
+    width: 520px;
     min-width: 320px;
     height: 20px;
+    font-size: 10px;
+    text-align: center;;
     background-color: blue;
+    position: relative;
+    overflow: hidden;
+    /*flex-basis: 100%;*/
+}
+
+#markupXPoints{
+    height: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: red;
+    position: absolute;
+    display: flex;
+    justify-content: center;
 }
 
 #graphYMarkup{
-    width: 100%;
-    height: 20px;
-    background-color: red;
+    width: 100px;
+    height: 520px;
+    overflow: hidden;
+    position: relative;
+}
+
+#markupYPoints{
+    background-color: purple;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .graphPoint{
