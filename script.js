@@ -8,7 +8,7 @@ const graphXMarkup = document.getElementById("graphXMarkup");
 const markupXPoints = document.getElementById("markupXPoints");
 const graphYMarkup = document.getElementById("graphYMarkup");
 const markupYPoints = document.getElementById("markupYPoints");
-graphDisplay.style.cssText = "width: 520px; height: 520px";
+//graphDisplay.style.cssText = "width: 520px; height: 520px";
 
 const xAxis = document.createElement("div");
 const yAxis = document.createElement("div");
@@ -70,7 +70,6 @@ function functionOfX(x, functionOfX = "x*2"){
     //turn func to x
     let replacedFunc = functionOfX.replace("x", x);
 
-    console.log(replacedFunc)
     return eval(replacedFunc);
     //return 1/x; //x**2/*x^3*///x**2 //1/x ? 1/x : null;//x**2 ? x**2 : null;
 }
