@@ -20,8 +20,6 @@ body{
 }
 
 #graphDisplayContainer{
-    /*width: calc(50% + 20px);
-    height: calc(50% + 20px);*/
     width: calc(40vw + 30px);
     min-width: calc(280px + 30px);
     height: 100%;
@@ -150,4 +148,15 @@ body{
     width: 7rem;
     height: 2rem;
     font-family: 'Courier New', Courier, monospace;
+}
+
+@media screen and (max-width: 400px) {
+    #graphDisplayContainer{
+        width: 100%;
+        margin: 0;
+    }
+    
+    #graphDisplay{
+        width: calc(100% - 30px);
+    }
 }
