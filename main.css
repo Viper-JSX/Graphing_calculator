@@ -159,4 +159,8 @@ body{
     #graphDisplay{
         width: calc(100% - 30px);
     }
+
+    #graphXMarkup{
+        width: calc(100% - 30px); /*30 px is the width of y-axis*/
+    }
 }
