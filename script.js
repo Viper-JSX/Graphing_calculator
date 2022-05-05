@@ -68,19 +68,11 @@ const graphRange = {l: -20, h: 20};
 xAxis.id = "xAxis";
 yAxis.id = "yAxis";
 
-//functionInput.onchange = handleFunctionInputChnage;
-functionForms[0].querySelector("input").onchange = (event) => handleFunctionInputChange({event, orderNumber: 0});
 addFunctionButton.onclick = handleInputAdd;
 scaleInput.onchange = handleScale;
 
 graphDisplay.onmousedown = handleGraphDisplayDragStart;
 graphDisplay.onmouseup = handleGraphDisplayDragEnd;
-
-/* Scale
-graphDisplay.ontouchstart = handleScaleStart;
-graphDisplay.ontouchmove = handleScale;
-graphDisplay.ontouchend = handleScaleEnd;
-*/
 
 prepareInputs();
 renderMarkup();
@@ -95,7 +87,7 @@ function prepareInputs(){
     functionForms = functionsForm.querySelectorAll("div");
 
     for(let i = 0; i < functionForms.length; i++){
-        functionForms[i].querySelector("input").onchange = handleFunctionInputChange;
+        functionForms[i].querySelector("input").onchange = (event) => handleFunctionInputChange({event, orderNumber: 0});;
         functionForms[i].querySelector("button").onclick = handleInputRemove;
     }
 }
@@ -108,7 +100,9 @@ function handleInputAdd(event){
     const removeFunctionButton = document.createElement("button");
     const orderNumber = functionForms.length;
     const color = colors[orderNumber];
-
+    let newFunctionOfX = new FunctionOfX((x) => null, orderNumber, color);
+    functions.push(newFunctionOfX);
+    
     functionInputForm.classList.add("functionInputForm");
     functionInput.onchange = (event) => handleFunctionInputChange({event, orderNumber});;
     removeFunctionButton.onclick = () => handleInputRemove(orderNumber);
@@ -186,13 +180,6 @@ function handleOriginOffsetChange({ event, dragStartCoords}){
     
     positionTheMarkup(movedBy);
 
-    //render the graph up
-    //graphContainer.style.width = `${(}px`;
-    //graphContainer.style.height = `${(Math.abs(graphRange.l) + Math.abs(graphRange.h)) * unitSizeInPixels * scale}px`;
-    //console.log("Width: ", ((Math.abs(graphRange.l) + Math.abs(graphRange.h)) * unitSizeInPixels * scale) / 2,  originOffset.x)
-    //if(graphContainerDimentions.width / 2 <= originOffset.x * scale /*|| ((Math.abs(graphRange.l) + Math.abs(graphRange.h)) * unitSizeInPixels * scale) / 2 >= originOffset.x*/){
-    
-    //console.log("Offset left: ", graphContainerDimentions.width / 2 - Math.abs(originOffset.x));
     if(graphContainerDimentions.width / 2 - Math.abs(originOffset.x) < 250){
         graphRange.l *= 1.2; //Increase field size when reaching the edge
         graphRange.h *= 1.2; //Increase field size when reaching the edge
@@ -227,26 +214,7 @@ function handleScale(event){
     drawGraph(functionOfX, graphRange);
 }
 
-/* Handle scale
-function handleScaleStart(event){
-    console.log(event.touches.lenght);
-    ///if(event.touches.lenght == 2){
-        
-        console.log("ScalingStart");
-        isScaling = true;
-    //}
-}
 
-function handleScale(event){
-    console.log(event)
-    console.log("moving scale");
-}
-
-function handleScaleEnd(){
-    console.log("End scalse");
-    isScaling = false;
-}
-*/
 function drawGraph(functionOfX, graphRange){
     graphContainer.textContent = ""; 
     updateGraphContainerDimentions();

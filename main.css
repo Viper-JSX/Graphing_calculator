@@ -144,6 +144,10 @@ body{
     transform: translateX(-50%);
 }
 
+#functionsForm{
+    position: absolute;
+}
+
 #functionInput{
     width: 7rem;
     height: 2rem;
