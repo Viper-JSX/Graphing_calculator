@@ -76,7 +76,7 @@ graphDisplay.onmouseup = handleGraphDisplayDragEnd;
 
 prepareInputs();
 renderMarkup();
-drawGraph(functionOfX, graphRange);
+drawGraph(graphRange);
 
 //----------------------//
 
@@ -100,7 +100,7 @@ function handleInputAdd(event){
     const removeFunctionButton = document.createElement("button");
     const orderNumber = functionForms.length;
     const color = colors[orderNumber];
-    let newFunctionOfX = new FunctionOfX((x) => null, orderNumber, color);
+    let newFunctionOfX = new FunctionOfX((x) => x, orderNumber, color);
     functions.push(newFunctionOfX);
     
     functionInputForm.classList.add("functionInputForm");
@@ -143,7 +143,7 @@ function handleFunctionInputChange({ event, orderNumber }){
         return eval(func);
     }
 
-    drawGraph(functionOfX, graphRange);
+    drawGraph(graphRange);
 }
 
 function handleGraphDisplayDragStart(event){
@@ -183,13 +183,13 @@ function handleOriginOffsetChange({ event, dragStartCoords}){
     if(graphContainerDimentions.width / 2 - Math.abs(originOffset.x) < 250){
         graphRange.l *= 1.2; //Increase field size when reaching the edge
         graphRange.h *= 1.2; //Increase field size when reaching the edge
-        drawGraph(functionOfX, graphRange);
+        drawGraph(graphRange);
     }
 
     if(graphContainerDimentions.height / 2 - Math.abs(originOffset.y) < 250){
         graphRange.l *= 1.2; // Increase field size when reaching the edge
         graphRange.h *= 1.2; // Increase field size when reaching the edge
-        drawGraph(functionOfX, graphRange);
+        drawGraph(graphRange);
     }
 
     //change background position too
@@ -211,11 +211,11 @@ function handleScale(event){
     step = step / scale > 0.1 ?  parseFloat((0.1 / scale).toFixed(2)) : 0.1;//.toFixed(1)); //> 0.01 ? 1/scale : 0.01;
 
     renderMarkup();
-    drawGraph(functionOfX, graphRange);
+    drawGraph(graphRange);
 }
 
 
-function drawGraph(functionOfX, graphRange){
+function drawGraph(graphRange){
     graphContainer.textContent = ""; 
     updateGraphContainerDimentions();
     updateOriginCoordinates();
@@ -223,7 +223,44 @@ function drawGraph(functionOfX, graphRange){
     graphContainer.appendChild(xAxis);
     graphContainer.appendChild(yAxis);
 
+    for(let i = graphRange.l; i <= graphRange.h; i += step){
+        for(let j = 0; j < functions.length; j++){
+            const newPoint = document.createElement("div");
+            newPoint.classList.add("graphPoint");
+            x = i;
+            y = -1 * functions[j].functionOfX(x); //functionOfX(x);
 
+            if(!y || y === -Infinity || y === Infinity) continue; 
+            console.log("drawing")
+            x *= unitSizeInPixels;
+            y *= unitSizeInPixels; 
+    
+            x += originCoords.x;
+            y += originCoords.y;
+    
+            newPoint.style.cssText = `left: ${x}px; top: ${y}px`;
+            graphContainer.appendChild(newPoint);
+    
+            //rotation and tangents
+            if(i < graphRange.h){
+                let followPoint = functions[j].functionOfX(i + step) * unitSizeInPixels; //functionOfX(i + step) * unitSizeInPixels;
+                let xDist = step * unitSizeInPixels;
+                let yDist = followPoint - functions[j].functionOfX(i) * unitSizeInPixels; //functionOfX(i) * unitSizeInPixels;
+                let length = 0;
+                let rotationAngle = Math.atan(yDist / xDist);
+        
+            
+                rotationAngle *= -1;
+    
+                length = Math.hypot(yDist, xDist);
+                newPoint.style.width = `${length + 1}px`;
+                newPoint.style.height = `${lineThikness}px`;
+                newPoint.style.transform = `rotate(${rotationAngle * 57.296}deg)`;
+            }
+        }
+    }
+
+    /*
     for(let i = graphRange.l; i <= graphRange.h; i += step){
         const newPoint = document.createElement("div");
         newPoint.classList.add("graphPoint");
@@ -259,6 +296,7 @@ function drawGraph(functionOfX, graphRange){
         }
         /////////////////////////////////////////////
     }
+    */
 
     xAxis.style.top =  `${originCoords.x}px`;
     yAxis.style.left = `${originCoords.y}px`;
