@@ -1,6 +1,10 @@
 //---Variables---//
 const graphingCalculator = document.getElementById("graphingCalculator");
-const functionInput = document.getElementById("functionInput");
+//const functionInput = document.getElementById("functionInput");
+const functionsForm = document.getElementById("functionsForm");
+const addFunctionButton = functionsForm.querySelector("#addFunctionButton");
+let functionForms = functionsForm.querySelectorAll("div");
+
 const scaleInput = document.getElementById("scaleInput");
 const graphDisplay = document.getElementById("graphDisplay");
 const graphContainer = document.getElementById("graphContainer");
@@ -46,7 +50,9 @@ const graphRange = {l: -20, h: 20};
 xAxis.id = "xAxis";
 yAxis.id = "yAxis";
 
-functionInput.onchange = handleFunctionInputChnage;
+//functionInput.onchange = handleFunctionInputChnage;
+functionForms[0].querySelector("input").onchange = handleFunctionInputChnage
+addFunctionButton.onclick = handleInputAdd;
 scaleInput.onchange = handleScale;
 
 graphDisplay.onmousedown = handleGraphDisplayDragStart;
@@ -58,6 +64,7 @@ graphDisplay.ontouchmove = handleScale;
 graphDisplay.ontouchend = handleScaleEnd;
 */
 
+prepareInputs();
 renderMarkup();
 drawGraph(functionOfX, graphRange);
 
@@ -65,6 +72,25 @@ drawGraph(functionOfX, graphRange);
 
 
 //---Functions---//
+
+function prepareInputs(){
+    functionForms = functionsForm.querySelectorAll("div");
+
+    for(let i = 0; i < functionForms.length; i++){
+        functionForms[i].querySelector("input").onchange = handleFunctionInputChnage;
+        functionForms[i].querySelector("button").onclick = handleInputRemove;
+    }
+}
+
+function handleInputAdd(event){
+    event.preventDefault();
+    console.log("Adding");
+}
+
+function handleInputRemove(event){
+    event.preventDefault();
+    console.log("removing");
+}
 
 function functionOfX(x, functionOfX = "x*2"){
     //turn func to x
