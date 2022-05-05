@@ -85,6 +85,21 @@ function prepareInputs(){
 function handleInputAdd(event){
     event.preventDefault();
     console.log("Adding");
+//    <div class="functionInputForm" countNum="1">
+//    <input class="functionInput" type="text" />
+//    <button class="removeFunctionButton">-</button>
+//</div>
+
+    const functionInputForm = document.createElement("div");
+    const functionInput = document.createElement("input");
+    const removeFunctionButton = document.createElement("button");
+
+    functionInput.onchange = handleFunctionInputChnage;
+    removeFunctionButton.onclick = handleInputRemove;
+    removeFunctionButton.textContent = "-";
+    functionInputForm.append(functionInput, removeFunctionButton);
+
+    functionsForm.append(functionInputForm);
 }
 
 function handleInputRemove(event){
