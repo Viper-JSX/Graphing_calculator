@@ -1,3 +1,24 @@
+class FunctionOfX{
+    constructor(functionOfX, orderNumber, color){
+        this.functionOfX = functionOfX;
+        this.orderNumber = orderNumber;
+        this.color = color;
+    }
+
+    changeFunctionOfX(){
+
+    }
+
+    changeOrderNumber(newOrderNumber){
+        this.orderNumber = newOrderNumber;
+    }
+
+    changeColor(newColor){
+        this.color = newColor;
+    }
+}
+
+
 //---Variables---//
 const graphingCalculator = document.getElementById("graphingCalculator");
 //const functionInput = document.getElementById("functionInput");
@@ -19,9 +40,7 @@ const yAxis = document.createElement("div");
 
 let x;
 let y;
-let functionString = "x^2"; //x**2;
 let scale = 1; //The bigger the scale the tinier change of x
-//let isScaling = false;
 let step = 0.1 / scale;
 let lineThikness = 1;
 let unitSizeInPixels = 20; //distance of one unit of coordinates
@@ -31,16 +50,15 @@ const originOffset = {x: 0, y: 0};
 const originMovedBy = {x: 0, y: 0};
 const graphContainerDimentions = {width: 520, height: 520};
 const markupOffset = {xMarkup: 0, yMarkup: 0};
+const colors = ["blue", "red", "green", "purple", "orange"];
+
+const functions = [new FunctionOfX((x) => x**2, 0, colors[0])];
 
 const graphFieldRange = {
     x: {l: -graphDisplay.offsetWidth / (2 * unitSizeInPixels), h: graphDisplay.offsetWidth / (2 * unitSizeInPixels)},
     y: {l: -graphDisplay.offsetHeight / (2 * unitSizeInPixels), h: graphDisplay.offsetHeight / (2 * unitSizeInPixels)},
 };
 const graphRange = {l: -20, h: 20};
-//const graphFieldRange = {
-//    x: {l: graphFieldInitRange.x.l / scale, h: graphFieldInitRange.x.h},
-//    y: {l: graphFieldInitRange.y.l / scale, h: graphFieldInitRange.y.h}
-//};
 
 //---------------//
 
@@ -51,7 +69,7 @@ xAxis.id = "xAxis";
 yAxis.id = "yAxis";
 
 //functionInput.onchange = handleFunctionInputChnage;
-functionForms[0].querySelector("input").onchange = handleFunctionInputChnage
+functionForms[0].querySelector("input").onchange = (event) => handleFunctionInputChange({event, orderNumber: 0});
 addFunctionButton.onclick = handleInputAdd;
 scaleInput.onchange = handleScale;
 
@@ -77,29 +95,27 @@ function prepareInputs(){
     functionForms = functionsForm.querySelectorAll("div");
 
     for(let i = 0; i < functionForms.length; i++){
-        functionForms[i].querySelector("input").onchange = handleFunctionInputChnage;
+        functionForms[i].querySelector("input").onchange = handleFunctionInputChange;
         functionForms[i].querySelector("button").onclick = handleInputRemove;
     }
 }
 
 function handleInputAdd(event){
     event.preventDefault();
-    console.log("Adding");
-//    <div class="functionInputForm" countNum="1">
-//    <input class="functionInput" type="text" />
-//    <button class="removeFunctionButton">-</button>
-//</div>
 
     const functionInputForm = document.createElement("div");
     const functionInput = document.createElement("input");
     const removeFunctionButton = document.createElement("button");
+    const orderNumber = functionForms.length;
+    const color = colors[orderNumber];
 
-    functionInput.onchange = handleFunctionInputChnage;
-    removeFunctionButton.onclick = handleInputRemove;
+    functionInputForm.classList.add("functionInputForm");
+    functionInput.onchange = (event) => handleFunctionInputChange({event, orderNumber});;
+    removeFunctionButton.onclick = () => handleInputRemove(orderNumber);
     removeFunctionButton.textContent = "-";
     functionInputForm.append(functionInput, removeFunctionButton);
-
     functionsForm.append(functionInputForm);
+    functionForms = functionsForm.querySelectorAll(".functionInputForm")
 }
 
 function handleInputRemove(event){
@@ -116,7 +132,9 @@ function functionOfX(x, functionOfX = "x*2"){
 }
 
 
-function handleFunctionInputChnage(event){
+function handleFunctionInputChange({ event, orderNumber }){
+    console.log("orderNumber", orderNumber)
+
     let func = event.target.value;
     func = func.replace("^", "**");
     func = func.replace("sin", "Math.sin");
