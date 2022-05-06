@@ -1,7 +1,11 @@
 class FunctionOfX{
     constructor(functionOfX, orderNumber, color){
         this.functionOfX = (x) => { 
-            let yStr = turnStringIntoFunctionOfX(functionOfX).replace(/x/i, x);
+            let yStr = //x > 0 ? 
+            turnStringIntoFunctionOfX(functionOfX).replace(/x/i, x);
+            //:
+            //turnStringIntoFunctionOfX(functionOfX).replace(/x/i, (x)); // to avoid a problem -x**n
+            
             let y = eval(yStr); 
             return y;
         } //functionOfX;
@@ -152,6 +156,7 @@ function handleFunctionInputChange({ event, orderNumber }){
 
 function turnStringIntoFunctionOfX(stringFunc){
     let func = stringFunc;
+    func = func.replace("x", "(x)"); //To avoid a problem -x^n (Syntax error)
     func = func.replace("^", "**");
     func = func.replace("sin", "Math.sin");
     func = func.replace("cos", "Math.cos");
