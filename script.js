@@ -1,12 +1,21 @@
 class FunctionOfX{
     constructor(functionOfX, orderNumber, color){
-        this.functionOfX = functionOfX;
+        this.functionOfX = (x) => { 
+            let yStr = turnStringIntoFunctionOfX(functionOfX).replace(/x/i, x);
+            let y = eval(yStr); 
+            return y;
+        } //functionOfX;
         this.orderNumber = orderNumber;
         this.color = color;
     }
 
-    changeFunctionOfX(){
-
+    changeFunctionOfX(functionStr){
+        console.log("changig", functionStr)
+        this.functionOfX = (x) => { 
+            let yStr = turnStringIntoFunctionOfX(functionStr).replace(/x/i, x);
+            let y = eval(yStr);
+            return y;
+        }
     }
 
     changeOrderNumber(newOrderNumber){
@@ -52,7 +61,7 @@ const graphContainerDimentions = {width: 520, height: 520};
 const markupOffset = {xMarkup: 0, yMarkup: 0};
 const colors = ["blue", "red", "green", "purple", "orange"];
 
-const functions = [new FunctionOfX((x) => x**2, 0, colors[0])];
+const functions = [new FunctionOfX("x*2", 0, colors[0])];
 
 const graphFieldRange = {
     x: {l: -graphDisplay.offsetWidth / (2 * unitSizeInPixels), h: graphDisplay.offsetWidth / (2 * unitSizeInPixels)},
@@ -129,7 +138,20 @@ function functionOfX(x, functionOfX = "x*2"){
 function handleFunctionInputChange({ event, orderNumber }){
     console.log("orderNumber", orderNumber)
 
-    let func = event.target.value;
+    let stringFunc = event.target.value;
+    //let func = turnStringIntoFunctionOfX(stringFunc);
+
+    for(let i = 0; i < functions.length; i++){
+        if(functions[i].orderNumber == orderNumber){
+            functions[i].changeFunctionOfX(stringFunc);
+        }
+    }
+
+    drawGraph(graphRange);
+}
+
+function turnStringIntoFunctionOfX(stringFunc){
+    let func = stringFunc;
     func = func.replace("^", "**");
     func = func.replace("sin", "Math.sin");
     func = func.replace("cos", "Math.cos");
@@ -138,12 +160,7 @@ function handleFunctionInputChange({ event, orderNumber }){
     func = func.replace("ln", "Math.log");
     func = func.replace("e", "Math.E");
 
-    console.log(func)
-    functionOfX = function(x, functionOfX = func){
-        return eval(func);
-    }
-
-    drawGraph(graphRange);
+    return func;
 }
 
 function handleGraphDisplayDragStart(event){
@@ -231,7 +248,6 @@ function drawGraph(graphRange){
             y = -1 * functions[j].functionOfX(x); //functionOfX(x);
 
             if(!y || y === -Infinity || y === Infinity) continue; 
-            console.log("drawing")
             x *= unitSizeInPixels;
             y *= unitSizeInPixels; 
     
@@ -259,44 +275,6 @@ function drawGraph(graphRange){
             }
         }
     }
-
-    /*
-    for(let i = graphRange.l; i <= graphRange.h; i += step){
-        const newPoint = document.createElement("div");
-        newPoint.classList.add("graphPoint");
-        x = i;
-        y = -1 * functionOfX(x);
-
-        if(!y || y === -Infinity || y === Infinity) continue; 
-
-        x *= unitSizeInPixels;
-        y *= unitSizeInPixels; 
-
-        x += originCoords.x;
-        y += originCoords.y;
-
-        newPoint.style.cssText = `left: ${x}px; top: ${y}px`;
-        graphContainer.appendChild(newPoint);
-
-        //rotation and tangents
-        if(i < graphRange.h){
-            let followPoint = functionOfX(i + step) * unitSizeInPixels;
-            let xDist = step * unitSizeInPixels;
-            let yDist = followPoint - functionOfX(i) * unitSizeInPixels;
-            let length = 0;
-            let rotationAngle = Math.atan(yDist / xDist);
-    
-        
-            rotationAngle *= -1;
-
-            length = Math.hypot(yDist, xDist);
-            newPoint.style.width = `${length + 1}px`;
-            newPoint.style.height = `${lineThikness}px`;
-            newPoint.style.transform = `rotate(${rotationAngle * 57.296}deg)`;
-        }
-        /////////////////////////////////////////////
-    }
-    */
 
     xAxis.style.top =  `${originCoords.x}px`;
     yAxis.style.left = `${originCoords.y}px`;
