@@ -1,19 +1,34 @@
 class FunctionOfX{
-    constructor(functionOfX, orderNumber, color){
-        this.functionOfX = (x) => { 
-            let yStr = //x > 0 ? 
-            turnStringIntoFunctionOfX(functionOfX).replace(/x/i, x);
-            //:
-            //turnStringIntoFunctionOfX(functionOfX).replace(/x/i, (x)); // to avoid a problem -x**n
-            
-            let y = eval(yStr); 
-            return y;
-        } //functionOfX;
+    constructor(functionStr, orderNumber, color){
+        if(!functionOfX){
+            console.log(functionOfX)
+            this.functionOfX = (x) => {
+                return 0;
+            }
+        }
+        else{
+            this.functionOfX = (x) => { 
+                console.log(functionStr);
+                let yStr = turnStringIntoFunctionOfX(functionStr).replace(/x/i, x);
+                
+                let y = eval(yStr); 
+                return y;
+            }
+        }
+
         this.orderNumber = orderNumber;
         this.color = color;
     }
 
     changeFunctionOfX(functionStr){
+        console.log(functionStr)
+        if(!functionStr){
+            this.functionOfX = (x) => {
+                return 0;
+            }
+            return;
+        }
+
         this.functionOfX = (x) => { 
             let yStr = turnStringIntoFunctionOfX(functionStr).replace(/x/i, x);
             let y = eval(yStr);
@@ -33,7 +48,6 @@ class FunctionOfX{
 
 //---Variables---//
 const graphingCalculator = document.getElementById("graphingCalculator");
-//const functionInput = document.getElementById("functionInput");
 const functionsForm = document.getElementById("functionsForm");
 const addFunctionButton = functionsForm.querySelector("#addFunctionButton");
 let functionForms = functionsForm.querySelectorAll("div");
@@ -45,7 +59,6 @@ const graphXMarkup = document.getElementById("graphXMarkup");
 const markupXPoints = document.getElementById("markupXPoints");
 const graphYMarkup = document.getElementById("graphYMarkup");
 const markupYPoints = document.getElementById("markupYPoints");
-//graphDisplay.style.cssText = "width: 520px; height: 520px";
 
 const xAxis = document.createElement("div");
 const yAxis = document.createElement("div");
@@ -64,7 +77,7 @@ const graphContainerDimentions = {width: 520, height: 520};
 const markupOffset = {xMarkup: 0, yMarkup: 0};
 const colors = ["blue", "red", "green", "purple", "orange"];
 
-const functions = [new FunctionOfX("x*2", 0, colors[0])];
+const functions = [new FunctionOfX("x^2", 0, colors[0])];
 
 const graphFieldRange = {
     x: {l: -graphDisplay.offsetWidth / (2 * unitSizeInPixels), h: graphDisplay.offsetWidth / (2 * unitSizeInPixels)},
@@ -125,7 +138,7 @@ function handleInputAdd(event){
     const removeFunctionButton = document.createElement("button");
     const orderNumber = functionForms.length;
     const color = colors[orderNumber];
-    let newFunctionOfX = new FunctionOfX((x) => x, orderNumber, color);
+    let newFunctionOfX = new FunctionOfX("0", orderNumber, color);
     functions.push(newFunctionOfX);
     
     functionInputForm.classList.add("functionInputForm");
@@ -143,18 +156,16 @@ function handleInputAdd(event){
     functionForms = functionsForm.querySelectorAll(".functionInputForm")
 }
 
-function handleInputRemove(/*{event, orderNumber}*/obj){
-    //console.log("Deleting with ordernumber: ", orderNumber, event)
-    //event.preventDefault();
-    //console.log("Removing: ", obj)
+function handleInputRemove({event, orderNumber}){
+    event.preventDefault();
     for(let i = 0; i < functionForms.length; i++){
-        if(functionForms[i].getAttribute("ordernumber") == obj.orderNumber){
+        if(functionForms[i].getAttribute("ordernumber") == orderNumber){
             functionForms[i].remove();
         }
     }
 //
     for(let i = 0; i < functions.length; i++){
-        if(functions[i].orderNumber == obj.orderNumber){
+        if(functions[i].orderNumber == orderNumber){
             functions.splice(i, 1);
         }
     }
