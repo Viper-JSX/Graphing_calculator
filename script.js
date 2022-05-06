@@ -284,7 +284,7 @@ function drawGraph(graphRange){
             x += originCoords.x;
             y += originCoords.y;
     
-            newPoint.style.cssText = `left: ${x}px; top: ${y}px`;
+            newPoint.style.cssText = `left: ${x}px; top: ${y}px; background: ${functions[j].color}`;
             graphContainer.appendChild(newPoint);
     
             //rotation and tangents
