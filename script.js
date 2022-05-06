@@ -14,7 +14,6 @@ class FunctionOfX{
     }
 
     changeFunctionOfX(functionStr){
-        console.log("changig", functionStr)
         this.functionOfX = (x) => { 
             let yStr = turnStringIntoFunctionOfX(functionStr).replace(/x/i, x);
             let y = eval(yStr);
@@ -100,13 +99,23 @@ function prepareInputs(){
     functionForms = functionsForm.querySelectorAll("div");
 
     for(let i = 0; i < functionForms.length; i++){
-        functionForms[i].querySelector("input").onchange = (event) => handleFunctionInputChange({event, orderNumber: 0});;
-        functionForms[i].querySelector("button").onclick = handleInputRemove;
+        functionForms[i].querySelector("input").onchange = (event) => handleFunctionInputChange({event, orderNumber: i});
+        functionForms[i].querySelector("button").onclick = (event) => handleInputRemove({event, orderNumber: i});
+        functionForms[i].setAttribute("ordernumber", i);
+        functionForms[i].placeholder = i;
+    }
+
+    for(let i = 0; i < functions.length; i++){
+        functions[i].orderNumber = i;
     }
 }
 
 function handleInputAdd(event){
     event.preventDefault();
+
+    if(functionForms.length > 5){
+        return;
+    }
 
     const functionInputForm = document.createElement("div");
     const functionInput = document.createElement("input");
@@ -117,17 +126,33 @@ function handleInputAdd(event){
     functions.push(newFunctionOfX);
     
     functionInputForm.classList.add("functionInputForm");
+    functionInputForm.setAttribute("ordernumber", orderNumber);
     functionInput.onchange = (event) => handleFunctionInputChange({event, orderNumber});;
-    removeFunctionButton.onclick = () => handleInputRemove(orderNumber);
+    removeFunctionButton.onclick = (event) => handleInputRemove({event, orderNumber});
     removeFunctionButton.textContent = "-";
     functionInputForm.append(functionInput, removeFunctionButton);
     functionsForm.append(functionInputForm);
     functionForms = functionsForm.querySelectorAll(".functionInputForm")
 }
 
-function handleInputRemove(event){
-    event.preventDefault();
-    console.log("removing");
+function handleInputRemove(/*{event, orderNumber}*/obj){
+    //console.log("Deleting with ordernumber: ", orderNumber, event)
+    //event.preventDefault();
+    //console.log("Removing: ", obj)
+    for(let i = 0; i < functionForms.length; i++){
+        if(functionForms[i].getAttribute("ordernumber") == obj.orderNumber){
+            functionForms[i].remove();
+        }
+    }
+//
+    for(let i = 0; i < functions.length; i++){
+        if(functions[i].orderNumber == obj.orderNumber){
+            functions.splice(i, 1);
+        }
+    }
+    prepareInputs();
+    drawGraph();
+    //console.log("removing", functionForms, functions);
 }
 
 function functionOfX(x, functionOfX = "x*2"){
@@ -140,8 +165,7 @@ function functionOfX(x, functionOfX = "x*2"){
 
 
 function handleFunctionInputChange({ event, orderNumber }){
-    console.log("orderNumber", orderNumber)
-
+    //console.log("orderNumber", orderNumber)
     let stringFunc = event.target.value;
     //let func = turnStringIntoFunctionOfX(stringFunc);
 
@@ -156,7 +180,8 @@ function handleFunctionInputChange({ event, orderNumber }){
 
 function turnStringIntoFunctionOfX(stringFunc){
     let func = stringFunc;
-    func = func.replace("x", "(x)"); //To avoid a problem -x^n (Syntax error)
+    console.log(func)
+    func = func.replace("x", "(x)"); //Parenthesis are used to avoid a problem -x^n (Syntax error)
     func = func.replace("^", "**");
     func = func.replace("sin", "Math.sin");
     func = func.replace("cos", "Math.cos");
@@ -317,8 +342,6 @@ function positionTheMarkup(movedBy){
 
 function centerCurrentPoint(timesDifferenceFromPrevious){
     let generalOffset = ((Math.abs(graphRange.l) + Math.abs(graphRange.h)) * unitSizeInPixels * scale) - ((Math.abs(graphRange.l) + Math.abs(graphRange.h)) * unitSizeInPixels * scale) / (timesDifferenceFromPrevious);
-
-    console.log("generalXOffset: ", generalOffset);
     originOffset.x -= generalOffset;
     originOffset.y += generalOffset;
 }
@@ -326,8 +349,6 @@ function centerCurrentPoint(timesDifferenceFromPrevious){
 function updateOriginCoordinates(){    
     originCoords.x = graphContainer.offsetWidth / 2;
     originCoords.y = graphContainer.offsetHeight / 2;
-    //console.log("X: ", originCoords.x , "Y: ", originCoords.y)
-    //console.log("updating origin coords:", graphDisplay.offsetWidth / 2, graphDisplay.offsetHeight / 2)
 }
 
 function updateGraphContainerDimentions(){
