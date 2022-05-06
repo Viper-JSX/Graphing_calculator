@@ -1,3 +1,5 @@
+//!Need to look through function interpretation
+
 class FunctionOfX{
     constructor(functionStr, orderNumber, color){
         if(!functionOfX){
@@ -9,7 +11,7 @@ class FunctionOfX{
         else{
             this.functionOfX = (x) => { 
                 console.log(functionStr);
-                let yStr = turnStringIntoFunctionOfX(functionStr).replace(/x/i, x);
+                let yStr = turnStringIntoFunctionOfX(functionStr).replaceAll(/x/ig, x);
                 
                 let y = eval(yStr); 
                 return y;
@@ -29,8 +31,9 @@ class FunctionOfX{
             return;
         }
 
+
         this.functionOfX = (x) => { 
-            let yStr = turnStringIntoFunctionOfX(functionStr).replace(/x/i, x);
+            let yStr = turnStringIntoFunctionOfX(functionStr).replace(/x/ig, x);
             let y = eval(yStr);
             return y;
         }
@@ -199,14 +202,14 @@ function handleFunctionInputChange({ event, orderNumber }){
 
 function turnStringIntoFunctionOfX(stringFunc){
     let func = stringFunc;
-    func = func.replace("x", "(x)"); //Parenthesis are used to avoid a problem -x^n (Syntax error)
-    func = func.replace("^", "**");
-    func = func.replace("sin", "Math.sin");
-    func = func.replace("cos", "Math.cos");
-    func = func.replace("tan", "Math.tan");
-    func = func.replace("lg", "Math.log10");
-    func = func.replace("ln", "Math.log");
-    func = func.replace("e", "Math.E");
+    func = func.replaceAll("x", "(x)"); //Parenthesis are used to avoid a problem -x^n (Syntax error)
+    func = func.replaceAll("^", "**");
+    func = func.replaceAll("sin", "Math.sin");
+    func = func.replaceAll("cos", "Math.cos");
+    func = func.replaceAll("tan", "Math.tan");
+    func = func.replaceAll("lg", "Math.log10");
+    func = func.replaceAll("ln", "Math.log");
+    func = func.replaceAll("e", "Math.E");
 
     return func;
 }
