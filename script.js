@@ -88,25 +88,27 @@ const graphRange = {l: -20, h: 20};
 //---------------//
 
 
-//---Initial start set---//
-
-xAxis.id = "xAxis";
-yAxis.id = "yAxis";
-
-addFunctionButton.onclick = handleInputAdd;
-scaleInput.onchange = handleScale;
-
-graphDisplay.onmousedown = handleGraphDisplayDragStart;
-graphDisplay.onmouseup = handleGraphDisplayDragEnd;
-
-prepareInputs();
-renderMarkup();
-drawGraph(graphRange);
-
-//----------------------//
+startTheCalculator();
 
 
 //---Functions---//
+
+function startTheCalculator(){
+    //---Initial start set---//
+
+    xAxis.id = "xAxis";
+    yAxis.id = "yAxis";
+
+    addFunctionButton.onclick = handleInputAdd;
+    scaleInput.onchange = handleScale;
+
+    graphDisplay.onmousedown = handleGraphDisplayDragStart;
+    graphDisplay.onmouseup = handleGraphDisplayDragEnd;
+
+    prepareInputs();
+    renderMarkup();
+    drawGraph(graphRange);
+}
 
 function prepareInputs(){
     functionForms = functionsForm.querySelectorAll(".functionInputForm");
@@ -152,7 +154,7 @@ function handleInputAdd(event){
     functionInput.onchange = (event) => handleFunctionInputChange({event, orderNumber});;
     removeFunctionButton.onclick = (event) => handleInputRemove({event, orderNumber});
     functionInputForm.append(functionInput, colorIndicator, removeFunctionButton);
-    functionsForm.append(functionInputForm);
+    functionsForm.insertBefore(functionInputForm, addFunctionButton);
     functionForms = functionsForm.querySelectorAll(".functionInputForm")
 }
 
