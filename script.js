@@ -96,17 +96,19 @@ drawGraph(graphRange);
 //---Functions---//
 
 function prepareInputs(){
-    functionForms = functionsForm.querySelectorAll("div");
+    functionForms = functionsForm.querySelectorAll(".functionInputForm");
 
     for(let i = 0; i < functionForms.length; i++){
-        functionForms[i].querySelector("input").onchange = (event) => handleFunctionInputChange({event, orderNumber: i});
-        functionForms[i].querySelector("button").onclick = (event) => handleInputRemove({event, orderNumber: i});
+        functionForms[i].querySelector(".functionInput").onchange = (event) => handleFunctionInputChange({event, orderNumber: i});
+        functionForms[i].querySelector(".colorIndicator").style.background = colors[i];
+        functionForms[i].querySelector(".removeFunctionButton").onclick = (event) => handleInputRemove({event, orderNumber: i});
         functionForms[i].setAttribute("ordernumber", i);
         functionForms[i].placeholder = i;
     }
 
     for(let i = 0; i < functions.length; i++){
         functions[i].orderNumber = i;
+        functions[i].color = colors[i];
     }
 }
 
@@ -119,6 +121,7 @@ function handleInputAdd(event){
 
     const functionInputForm = document.createElement("div");
     const functionInput = document.createElement("input");
+    const colorIndicator = document.createElement("div");
     const removeFunctionButton = document.createElement("button");
     const orderNumber = functionForms.length;
     const color = colors[orderNumber];
@@ -126,11 +129,16 @@ function handleInputAdd(event){
     functions.push(newFunctionOfX);
     
     functionInputForm.classList.add("functionInputForm");
+    functionInput.classList.add("functionInput");
+    colorIndicator.classList.add("colorIndicator");
+    removeFunctionButton.classList.add("removeFunctionButton");
     functionInputForm.setAttribute("ordernumber", orderNumber);
+    colorIndicator.style.background = color;
+    removeFunctionButton.textContent = "-";
+
     functionInput.onchange = (event) => handleFunctionInputChange({event, orderNumber});;
     removeFunctionButton.onclick = (event) => handleInputRemove({event, orderNumber});
-    removeFunctionButton.textContent = "-";
-    functionInputForm.append(functionInput, removeFunctionButton);
+    functionInputForm.append(functionInput, colorIndicator, removeFunctionButton);
     functionsForm.append(functionInputForm);
     functionForms = functionsForm.querySelectorAll(".functionInputForm")
 }
@@ -151,7 +159,7 @@ function handleInputRemove(/*{event, orderNumber}*/obj){
         }
     }
     prepareInputs();
-    drawGraph();
+    drawGraph(graphRange);
     //console.log("removing", functionForms, functions);
 }
 
@@ -165,9 +173,7 @@ function functionOfX(x, functionOfX = "x*2"){
 
 
 function handleFunctionInputChange({ event, orderNumber }){
-    //console.log("orderNumber", orderNumber)
     let stringFunc = event.target.value;
-    //let func = turnStringIntoFunctionOfX(stringFunc);
 
     for(let i = 0; i < functions.length; i++){
         if(functions[i].orderNumber == orderNumber){
@@ -180,7 +186,6 @@ function handleFunctionInputChange({ event, orderNumber }){
 
 function turnStringIntoFunctionOfX(stringFunc){
     let func = stringFunc;
-    console.log(func)
     func = func.replace("x", "(x)"); //Parenthesis are used to avoid a problem -x^n (Syntax error)
     func = func.replace("^", "**");
     func = func.replace("sin", "Math.sin");
