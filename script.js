@@ -1,4 +1,4 @@
-//!Need to look through function interpretation
+//Make error handling
 
 class FunctionOfX{
     constructor(functionStr, orderNumber, color){
@@ -248,15 +248,15 @@ function handleOriginOffsetChange({ event, dragStartCoords}){
     
     positionTheMarkup(movedBy);
 
-    if(graphContainerDimentions.width / 2 - Math.abs(originOffset.x) < 250){
-        graphRange.l *= 1.2; //Increase field size when reaching the edge
-        graphRange.h *= 1.2; //Increase field size when reaching the edge
+    if(graphContainerDimentions.width / 2 - Math.abs(originOffset.x) < 250 && graphContainerDimentions.width < 5000){  //5000 is the field dimentions limit
+        graphRange.l *= 1.8; //Increase field size when reaching the edge
+        graphRange.h *= 1.8; //Increase field size when reaching the edge
         drawGraph(graphRange);
     }
 
-    if(graphContainerDimentions.height / 2 - Math.abs(originOffset.y) < 250){
-        graphRange.l *= 1.2; // Increase field size when reaching the edge
-        graphRange.h *= 1.2; // Increase field size when reaching the edge
+    if(graphContainerDimentions.height / 2 - Math.abs(originOffset.y) < 250 && graphContainerDimentions.height < 5000){ //5000 is the field dimentions limit
+        graphRange.l *= 1.8; // Increase field size when reaching the edge
+        graphRange.h *= 1.8; // Increase field size when reaching the edge
         drawGraph(graphRange);
     }
 
@@ -316,7 +316,6 @@ function drawGraph(graphRange){
                 let length = 0;
                 let rotationAngle = Math.atan(yDist / xDist);
         
-            
                 rotationAngle *= -1;
     
                 length = Math.hypot(yDist, xDist);
@@ -338,7 +337,7 @@ function renderMarkup(){
         let newMarkXPoint = document.createElement("span");
         newMarkXPoint.className = "markXPoint";
         newMarkXPoint.textContent = (j / scale).toFixed(1);           
-        newMarkXPoint.style.width = `${/*unitSizeInPixels*/20}px`;
+        newMarkXPoint.style.width = `${/*unitSizeInPixels*/ 20}px`;
 
         markupXPoints.appendChild(newMarkXPoint);
         markupXPoints.style.marginLeft = `${originOffset.x}px`;
@@ -348,7 +347,7 @@ function renderMarkup(){
         let newMarkYPoint = document.createElement("span");
         newMarkYPoint.className = "markYPoint";
         newMarkYPoint.textContent = (j / scale).toFixed(1);        
-        newMarkYPoint.style.height = `${/*unitSizeInPixels*/20}px`;
+        newMarkYPoint.style.height = `${/*unitSizeInPixels*/ 20}px`;
 
         markupYPoints.appendChild(newMarkYPoint);
     }
