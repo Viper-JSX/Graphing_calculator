@@ -319,10 +319,10 @@ function drawGraph(graphRange){
             
                 rotationAngle *= -1;
     
-                length = Math.hypot(yDist, xDist);
-                newPoint.style.width = `${length + 1}px`;
-                newPoint.style.height = `${lineThikness}px`;
-                newPoint.style.transform = `rotate(${rotationAngle * 57.296}deg)`;
+                //length = Math.hypot(yDist, xDist);
+                //newPoint.style.width = `${length + 1}px`;
+                //newPoint.style.height = `${lineThikness}px`;
+                //newPoint.style.transform = `rotate(${rotationAngle * 57.296}deg)`;
             }
         }
     }
