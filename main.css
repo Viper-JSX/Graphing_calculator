@@ -27,7 +27,7 @@ body{
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    background-color: green;
+    background: #222222;
 }
 
 #graphDisplay{
@@ -59,7 +59,6 @@ body{
     min-width: 280px;
     font-size: 10px;
     text-align: center;
-    background-color: blue;
     position: relative;
     overflow: hidden;
     display: inline-block;
@@ -145,7 +144,7 @@ body{
 }
 
 #functionsForm{
-    position: absolute;
+    /*position: absolute;*/
 }
 
 .functionInputForm{
